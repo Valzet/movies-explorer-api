@@ -10,6 +10,7 @@ const INVALID_LOGIN_DATA = 'Неправильные почта или паро�
 const INVALID_EMAIL = 'Данный email уже зарегистрирован';
 const NOTFOUND_ERROR = 'Такой страницы не существует.';
 const SERVER_ERROR = 'Ошибка на стороне сервера';
+const VALIDATION_ERROR = 'Ошибка валидации фильма';
 
 module.exports = {
   INVALID_MOVIE_DATA,
@@ -24,4 +25,5 @@ module.exports = {
   INVALID_EMAIL,
   NOTFOUND_ERROR,
   SERVER_ERROR,
+  VALIDATION_ERROR,
 };

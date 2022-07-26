@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
+const { NODE_ENV, JWT_SECRET } = process.env;
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const ValidationError = require('../errors/validation-err');
@@ -31,13 +33,13 @@ module.exports.getUser = (req, res, next) => {
 };
 
 module.exports.patchUser = (req, res, next) => {
-  const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, {
+  const { email, name } = req.body;
+  User.findByIdAndUpdate(req.user._id, { email, name }, {
     new: true,
     runValidators: true,
   })
     .then(() => {
-      res.status(200).send({ name, about });
+      res.status(200).send({ email, name });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -63,9 +65,10 @@ module.exports.login = (req, res) => {
       }
       const token = jwt.sign(
         { _id: user._id },
-        'some-secret-key',
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
+
       return res.send({ token });
     })
     .catch((err) => {

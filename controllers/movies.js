@@ -30,13 +30,13 @@ module.exports.postMovie = (req, res, next) => {
 
 module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.movieId)
-    .then((card) => {
-      if (!card) {
+    .then((movie) => {
+      if (!movie) {
         throw new NotFoundError(NOTFOUND_MOVIE_ID);
-      } if (!card.owner.equals(req.user._id)) {
+      } if (!movie.owner.equals(req.user._id)) {
         return next(new ForbiddenError(FORBIDDEN_DELETE_MOVIE));
       }
-      return card.remove()
+      return movie.remove()
         .then(() => res.status(200).send({ message: SUCCSESS_MOVIE_REMOVE }));
     })
     .catch((err) => {

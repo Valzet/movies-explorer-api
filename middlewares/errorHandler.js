@@ -7,6 +7,4 @@ const serverError = ((err, req, res, next) => {
   next();
 });
 
-module.exports = {
-  serverError,
-};
+module.exports = serverError;

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { VALIDATION_ERROR } = require('../utils/errorMessages');
 
 const movieSchema = new mongoose.Schema({
   country: {
@@ -18,7 +19,7 @@ const movieSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  desctiption: {
+  description: {
     type: String,
     required: true,
   },
@@ -29,7 +30,7 @@ const movieSchema = new mongoose.Schema({
       validator(link) {
         return validator.isURL(link);
       },
-      message: 'Ошибка Валидации',
+      message: VALIDATION_ERROR,
     },
   },
   trailerLink: {
@@ -39,7 +40,7 @@ const movieSchema = new mongoose.Schema({
       validator(link) {
         return validator.isURL(link);
       },
-      message: 'Ошибка Валидации',
+      message: VALIDATION_ERROR,
     },
   },
   thumbnail: {
@@ -49,7 +50,7 @@ const movieSchema = new mongoose.Schema({
       validator(link) {
         return validator.isURL(link);
       },
-      message: 'Ошибка Валидации',
+      message: VALIDATION_ERROR,
     },
   },
   owner: {

@@ -10,7 +10,7 @@ const limiter = require('./middlewares/rateLimiter');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes');
 const NotFoundError = require('./errors/not-found-err');
-const { errorHandler } = require('./middlewares/errorHandler');
+const errorHandler = require('./middlewares/errorHandler');
 const { NOTFOUND_ERROR } = require('./utils/errorMessages');
 
 const { PORT = 3000, DATABASE = 'mongodb://localhost:27017/moviesdb' } = process.env;
@@ -26,4 +26,6 @@ app.use('*', (req, res, next) => next(new NotFoundError(NOTFOUND_ERROR)));
 app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
-app.listen(PORT, () => { });
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
+});

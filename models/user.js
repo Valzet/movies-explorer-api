@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { VALIDATION_ERROR } = require('../utils/errorMessages');
 
 const userSchema = new mongoose.Schema({
 
@@ -11,7 +12,7 @@ const userSchema = new mongoose.Schema({
       validator(email) {
         return validator.isEmail(email);
       },
-      message: 'Ошибка Валидации',
+      message: VALIDATION_ERROR,
     },
   },
   password: {
