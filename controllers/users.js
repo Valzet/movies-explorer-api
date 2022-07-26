@@ -3,19 +3,28 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const ValidationError = require('../errors/validation-err');
+const ConflictError = require('../errors/conflict-err');
+const {
+  INVALID_USER_DATA,
+  NOTFOUND_USER,
+  INVALID_NEW_USER_DATA,
+  INVALID_LOGIN_DATA,
+  INVALID_EMAIL,
+
+} = require('../utils/errorMessages');
 
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь не найден');
+        throw new NotFoundError(NOTFOUND_USER);
       }
       return res.send({ data: user });
     })
 
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new ValidationError('Ошибка валидации'));
+        return next(new ValidationError(INVALID_USER_DATA));
       }
       return next(err);
     });
@@ -32,7 +41,7 @@ module.exports.patchUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError('Переданы некорректные данные при создании пользователя.'));
+        next(new ValidationError(INVALID_USER_DATA));
       }
       return next(err);
     });
@@ -44,13 +53,13 @@ module.exports.login = (req, res) => {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
+        return Promise.reject(new Error(INVALID_LOGIN_DATA));
       }
       return Promise.all([bcrypt.compare(password, user.password), user]);
     })
     .then(([isPasswordCorrect, user]) => {
       if (!isPasswordCorrect) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
+        return Promise.reject(new Error(INVALID_LOGIN_DATA));
       }
       const token = jwt.sign(
         { _id: user._id },
@@ -83,9 +92,9 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError('Переданы некорректные данные при создании пользователя.'));
+        next(new ValidationError(INVALID_NEW_USER_DATA));
       } if (err.code === 11000) {
-        return res.status(409).send({ message: 'Данный email уже зарегистрирован ' });
+        next(new ConflictError(INVALID_EMAIL));
       }
       return next(err);
     });
