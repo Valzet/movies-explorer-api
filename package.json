@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "end": "scp .env diploma@51.250.27.179:/home/diploma/movies-explorer-api"
   },
   "repository": {
     "type": "git",
