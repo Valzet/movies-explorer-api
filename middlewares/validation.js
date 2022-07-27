@@ -1,4 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
+const validator = require('validator');
+const { VALIDATION_ERROR } = require('../utils/errorMessages');
 
 const loginValidation = celebrate({
   body: Joi.object().keys({
@@ -7,11 +9,11 @@ const loginValidation = celebrate({
   }),
 });
 
-const authValidation = celebrate({
+const createUserValidation = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
   }),
 });
 
@@ -35,9 +37,24 @@ const postMovieValidation = celebrate({
     duration: Joi.number().required(),
     year: Joi.string().required(),
     description: Joi.string().required(),
-    image: Joi.string().required().pattern(/(https?:\/\/)?(www\.)?([A-Za-z0-9]+\.?)*\.[A-Za-z0-9-](\/([\w#.!?:=+&%@\-/])*)?/),
-    trailerLink: Joi.string().required().pattern(/(https?:\/\/)?(www\.)?([A-Za-z0-9]+\.?)*\.[A-Za-z0-9-](\/([\w#.!?:=+&%@\-/])*)?/),
-    thumbnail: Joi.string().required().pattern(/(https?:\/\/)?(www\.)?([A-Za-z0-9]+\.?)*\.[A-Za-z0-9-](\/([\w#.!?:=+&%@\-/])*)?/),
+    image: Joi.string().required().custom((value, helpers) => {
+      if (validator.isURL(value)) {
+        return value;
+      }
+      return helpers.message(VALIDATION_ERROR);
+    }),
+    trailerLink: Joi.string().required().custom((value, helpers) => {
+      if (validator.isURL(value)) {
+        return value;
+      }
+      return helpers.message(VALIDATION_ERROR);
+    }),
+    thumbnail: Joi.string().required().custom((value, helpers) => {
+      if (validator.isURL(value)) {
+        return value;
+      }
+      return helpers.message(VALIDATION_ERROR);
+    }),
     movieId: Joi.number().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
@@ -46,7 +63,7 @@ const postMovieValidation = celebrate({
 
 module.exports = {
   loginValidation,
-  authValidation,
+  createUserValidation,
   profileValidation,
   postMovieValidation,
   deleteMovieValidation,

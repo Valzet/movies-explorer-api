@@ -33,7 +33,8 @@ module.exports.deleteMovie = (req, res, next) => {
     .then((movie) => {
       if (!movie) {
         throw new NotFoundError(NOTFOUND_MOVIE_ID);
-      } if (!movie.owner.equals(req.user._id)) {
+      }
+      if (!movie.owner.equals(req.user._id)) {
         return next(new ForbiddenError(FORBIDDEN_DELETE_MOVIE));
       }
       return movie.remove()

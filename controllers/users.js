@@ -6,6 +6,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const ValidationError = require('../errors/validation-err');
 const ConflictError = require('../errors/conflict-err');
+const AlreadyExistData = require('../errors/exist-err');
 const {
   INVALID_USER_DATA,
   NOTFOUND_USER,
@@ -45,7 +46,9 @@ module.exports.patchUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError(INVALID_USER_DATA));
       }
-      return next(err);
+      if (err.code === 11000) {
+        next(new AlreadyExistData(INVALID_EMAIL));
+      } else { next(err); }
     });
 };
 
@@ -96,9 +99,9 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError(INVALID_NEW_USER_DATA));
-      } if (err.code === 11000) {
-        next(new ConflictError(INVALID_EMAIL));
       }
-      return next(err);
+      if (err.code === 11000) {
+        next(new ConflictError(INVALID_EMAIL));
+      } else { next(err); }
     });
 };
