@@ -14,9 +14,14 @@ const NotFoundError = require('./errors/not-found-err');
 const errorHandler = require('./middlewares/errorHandler');
 const { NOTFOUND_ERROR } = require('./utils/errorMessages');
 const routes = require('./routes');
+const MONGO_LOCAL = require('./routes');
 
-const { PORT = 3000, DATABASE = 'mongodb://localhost:27017/moviesdb' } = process.env;
-mongoose.connect(DATABASE);
+const {
+  PORT = 3000,
+  DATABASE_LINK,
+  NODE_ENV,
+} = process.env;
+mongoose.connect(NODE_ENV !== 'production' ? MONGO_LOCAL : DATABASE_LINK);
 app.use(helmet());
 app.use(cors());
 app.use(requestLogger);
