@@ -26,10 +26,7 @@ module.exports.getUser = (req, res, next) => {
     })
 
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return next(new ValidationError(INVALID_USER_DATA));
-      }
-      return next(err);
+      next(err);
     });
 };
 
