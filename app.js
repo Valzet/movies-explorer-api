@@ -14,7 +14,7 @@ const NotFoundError = require('./errors/not-found-err');
 const errorHandler = require('./middlewares/errorHandler');
 const { NOTFOUND_ERROR } = require('./utils/errorMessages');
 const routes = require('./routes');
-const MONGO_LOCAL = require('./routes');
+const MONGO_LOCAL = require('./utils/development');
 
 const {
   PORT = 3000,
